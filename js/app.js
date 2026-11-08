@@ -3,6 +3,7 @@
 import BANK from './bank/index.js';
 import { rng, tx } from './util.js';
 import { check } from './check.js';
+import { logAnswer } from './learnlog.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const app = $('#app');
@@ -41,7 +42,11 @@ function stars(id) {
   return ok >= 25 && ok / n >= 0.8 ? 3 : ok >= 10 ? 2 : ok >= 3 ? 1 : 0;
 }
 const starHTML = (k) => `<span class="stars">${'★'.repeat(k)}<i>${'★'.repeat(3 - k)}</i></span>`;
-function record(id, ok) { const s = (stats[id] ||= [0, 0]); s[0]++; if (ok) s[1]++; store.set('stats', stats); }
+function record(id, ok) {
+  const s = (stats[id] ||= [0, 0]); s[0]++; if (ok) s[1]++; store.set('stats', stats);
+  const tp = byId(id); if (tp) logAnswer('mathdojo', LOG_META, { id, name: tp.name, grade: tp.grade }, ok);
+}
+const LOG_META = { name: { zh: '數學練功房', en: 'Math Dojo' }, url: '/math-dojo/' };
 
 // ---------- header ----------
 function header() {
